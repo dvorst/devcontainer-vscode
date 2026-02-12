@@ -1,0 +1,43 @@
+{
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": ".",
+        "args": {
+            "USERNAME": "${localEnv:USERNAME}",
+            "ROOT_PASSWORD": "admin", // only used in the devcontainer, so hardcoding it is fine.
+            "TERMINAL_EDITOR": "neovim",
+            // add scripts dir to path
+            "SCRIPTS_DIR": "/workspaces/${localWorkspaceFolderBasename}/scripts"
+        }
+    },
+    "runArgs": [
+        "--privileged", // TODO: this does not fix rootless mode inside container
+        "--userns=host"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "shakram02.bash-beautify",
+                "waderyan.gitblame",
+                "mhutchie.git-graph",
+                "eamodio.gitlens",
+                "charliermarsh.ruff",
+                "tamasfe.even-better-toml",
+                "timonwong.shellcheck",
+                "mkhl.shfmt"
+            ]
+            // "settings": {}  Please modify settings in .vscode/settings.json
+        }
+    }//,
+    // "mounts": [
+    //     // Mount the Windows aws config and credentials folder to Linux
+    //     {
+    //         "source": "C:/Users/${localEnv:USERNAME}/.aws",
+    //         "target": "/home/${localEnv:USERNAME}/.aws",
+    //         "type": "bind"
+    //     }
+    // ],
+    // "forwardPorts": [],
+    // Install uv, install pre-commit, and link user aws creds to root home dir
+    // "postCreateCommand": "uv sync && sudo pre-commit install && sudo ln --force --symbolic --no-dereference /home/$USER/.aws /root/.aws"
+}

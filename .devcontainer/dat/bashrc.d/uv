@@ -1,0 +1,16 @@
+# Install venv to user home dir
+# Since the workspace is a directory located on 'Windows', the ownership is always set to
+# root:root when mounted to linux, which cannot be changed. Since the container will not be run as
+# root as this would lead to other issues, having a normal user interract with root-owned files
+# results in issues when tools need to manipulate files in the project directory, such as `uv`.
+# In order to circumvent this, the venv is not created in the workspace but in the users home
+# directory. Having the .venv located in the container only is perfectly fine, as Airflow can only
+# be run on Unix systems, meaning the .venv is never used on Windows anyway. Furthermore, because
+# the venv is installed on a Linux (ext4) filesystem, rather than a Windows (NTFS), it makes
+# symlinks possible (reducing installation size a little bit), and no NTFS->ext4 translation has
+# to be done (marginally improving performance).
+# An alternative to using the home dir would be to run uv with sudo, but then you need to provide
+# a password, environment variables would be lost, and using sudo with uv is unconventional for
+# users.
+# https://docs.astral.sh/uv/reference/environment/#uv_project_environment
+export UV_PROJECT_ENVIRONMENT="/home/$USER/venv"
