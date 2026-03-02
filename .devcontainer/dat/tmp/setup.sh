@@ -9,6 +9,9 @@ set -euxo pipefail
 # Internal field seperator
 IFS=$'\n\t'
 
+# Latest stable release (most repo's cannot deal with testing/unstable Debian releases)
+LATEST_STABLE_RELEASE="trixie"
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 # Argument parsing
 
@@ -174,14 +177,49 @@ install_pipx_packages() {
 	pipx install --global $packages
 }
 
-install_oh_my_bash() {
-	echo "# install_oh_my_bash()"
+verify_version_is_latest() {
 	local version=$1
-
 	if [[ "$version" != "latest" ]]; then
 		echo "NotImplementedError: only installing latest version is supported" >&2
 		exit 1
 	fi
+}
+
+verify_version_is_not_latest() {
+	local version=$1
+	if [[ "$version" = "latest" ]]; then
+		echo "NotImplementedError: 'latest' version cannot be determined, specify the version" >&2
+		exit 1
+	fi
+}
+
+install_docker() {
+	echo "# install_docker()"
+	local version=$1
+	verify_version_is_latest $version
+
+	ccurl https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+
+	tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/debian
+Suites: ${LATEST_STABLE_RELEASE}
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+	apt-get update
+	apt-get install -y \
+		docker-ce \
+		docker-ce-cli \
+		containerd.io \
+		docker-buildx-plugin \
+		docker-compose-plugin
+}
+
+install_oh_my_bash() {
+	echo "# install_oh_my_bash()"
+	local version=$1
+	verify_version_is_latest $version
 
 	# Globally install oh-mybash, which beautifies bash terminal
 	# THIS COULD BE BROKEN IN THE FUTURE: since oh-my-bash annoyingly does not have releases, and no
@@ -277,6 +315,31 @@ install_kubectl() {
 	curl --location --output "/tmp/kubectl" "https://dl.k8s.io/release/${latest_release}/bin/linux/amd64/kubectl"
 	install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
 	rm /tmp/kubectl
+}
+
+install_nvm() {
+	echo "# install_nvm()"
+	local version=$1 # v0.40.4
+	verify_version_is_not_latest "$version"
+	curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/${version}/install.sh" | bash
+
+	# load nvm in shell
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+}
+
+install_nodejs_and_npm_lts() {
+	echo "# install_nodejs_and_npm_lts()"
+	local version=$1
+	verify_version_is_latest "$version"
+	nvm install --lts
+}
+
+install_aws_cdk() {
+	echo "# install_aws_cdk()"
+	local version=$1
+	verify_version_is_latest "$version"
+	npm install -g aws-cdk
 }
 
 install_helm() {
@@ -440,6 +503,9 @@ cleanup() {
 	# remove apt lists to reduce image size
 	# A user should run apt update anyway if he/she wants to install something
 	rm -rf /var/lib/apt/lists/*
+
+	# delete everything in tmp dir
+	rm -rf /tmp/*
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #

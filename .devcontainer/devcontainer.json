@@ -23,12 +23,14 @@
                 "eamodio.gitlens",
                 "charliermarsh.ruff",
                 "tamasfe.even-better-toml",
+                "redhat.vscode-yaml",
                 "timonwong.shellcheck",
-                "mkhl.shfmt"
+                "mkhl.shfmt",
+                "iliazeus.vscode-ansi"
             ]
             // "settings": {}  Please modify settings in .vscode/settings.json
         }
-    }//,
+    },
     // "mounts": [
     //     // Mount the Windows aws config and credentials folder to Linux
     //     {
@@ -37,7 +39,7 @@
     //         "type": "bind"
     //     }
     // ],
-    // "forwardPorts": [],
-    // Install uv, install pre-commit, and link user aws creds to root home dir
-    // "postCreateCommand": "uv sync && sudo pre-commit install && sudo ln --force --symbolic --no-dereference /home/$USER/.aws /root/.aws"
+    "forwardPorts": [],
+    // Run the post create script, see '.devcontainer/dat/post-create-script.sh'
+    "postCreateCommand": ". /post-create-script.sh"
 }

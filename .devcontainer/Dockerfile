@@ -7,11 +7,12 @@
 #   unlikely that there will ever come a point where the image is unavailable while in use, or at
 #   least I sincierely hope that someone will update this to the latest build somewhere in the next
 #   8 years.
-FROM docker.io/debian:testing-20250929
+FROM docker.io/debian:testing-20260223
 
-# The dat dir contains all scripts, config files, etc. to set up the image, it is removed afterwards
-ARG DAT_DIR=/tmp/dat
-COPY dat/ $DAT_DIR
+# The dat dir contains all scripts, config files, etc. to set up the image
+# Files that are needed afterwards, should be placed in dat/tmp/ as tmp/ is cleared by the setup
+# script
+COPY dat/ /
 
 # The username is passed from the devcontainer.json, rather than using a generic user to provide a
 # personalised experience
@@ -53,10 +54,12 @@ RUN bash $DAT_DIR/setup.sh \
     --install databricks-cli \
     --install kubectl \
     --install helm \
-    --install helmfile=v1.1.0
-
-# Clean up previously copied folder
-RUN rm -r $DAT_DIR
+    --install helmfile=v1.1.0 \
+    --apt-package make \
+    # to install aws-cdk, npm is needed; to install npm, nvm is needed
+    --install nvm v0.40.4 \
+    --install nodejs-and-npm-lts \
+    --install aws-cdk
 
 # Set the default user to the one created in setup.sh
 USER $USERNAME
