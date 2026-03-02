@@ -41,5 +41,7 @@
     // ],
     "forwardPorts": [],
     // Run the post create script, see '.devcontainer/dat/post-create-script.sh'
-    "postCreateCommand": ". /post-create-script.sh"
+    "postCreateCommand": ". /post-create-script.sh",
+    // run the post start script, see '.devcontainer/dat/post-start-script.sh'
+    "postStartCommand": ". /post-start-script.sh"
 }
