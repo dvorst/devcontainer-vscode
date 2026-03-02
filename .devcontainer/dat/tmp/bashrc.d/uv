@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # Install venv to user home dir
 # Since the workspace is a directory located on 'Windows', the ownership is always set to
 # root:root when mounted to linux, which cannot be changed. Since the container will not be run as

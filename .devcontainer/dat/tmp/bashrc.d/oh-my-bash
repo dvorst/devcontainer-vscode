@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # Only load these settings for interactive shells, not for script/batch shells
 #   this prevents ble.sh being loaded when bash-scripts are run, which would provide no additional
 #   benefit and would only result in computational overhead.
@@ -45,4 +47,5 @@ plugins=(
 )
 
 # load oh my bash
+# shellcheck source="/usr/local/share/oh-my-bash/oh-my-bash.sh"
 source "$OSH"/oh-my-bash.sh
