@@ -5,6 +5,10 @@ set -euo pipefail
 # u: reference to an unset variable will fail the script
 # o pipefail: fail if pipeline fails
 
+echo "—————————————————————————————————————————————————————————————————————————————————————————————"
+echo "——————————————————————————————————— post-create-script.sh ———————————————————————————————————"
+set -x # print commands to terminal
+
 # Install python packages
 uv sync
 
@@ -18,3 +22,7 @@ sudo ln --force --symbolic --no-dereference "/home/$USER/.aws /root/.aws"
 # Configure git
 git config merge.ff false
 git config pull.rebase true
+
+set +x
+echo "——————————————————————————————————— post-create-script.sh ———————————————————————————————————"
+echo "—————————————————————————————————————————————————————————————————————————————————————————————"
