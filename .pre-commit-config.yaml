@@ -1,0 +1,61 @@
+default_stages: [pre-commit, pre-push]
+repos:
+
+  # Vanilla hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # TODO: many of these should be replacably by ruff config
+
+      # Prevent merge conflict markers
+      - id: check-merge-conflict
+
+      # Prevent commits to main branch (or to its previous name: master)
+      # This should also be blocked in repository settings
+      - id: no-commit-to-branch
+        args: ["--branch", "main", "--branch", "master"]
+
+      # # Ensure each line end with a newline
+      # - id: end-of-file-fixer
+
+      # # Remove trailing whitespace in lines
+      # - id: trailing-whitespace
+
+      # Convert CRLF (Windows) line endings, to UNIX (LF)
+      # Bash scripts cannot be run with CRLF line-endings, this will prompt the (incorrect) error
+      # that the file cannot be found.
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+
+  # Ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.7
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  # Pyrefly, type checker (faster alternative to MyPy, written in rust)
+  # To check only this hook run: pre-commit run pyrefly-check --all-files
+  # pre-commit normally sets up a separate environment where the hooks are installed to and run
+  #   from. Type checkers are a bit of an outlier, in the sense that types can be defined in a
+  #   project resulting in the type checker working best if it is installed in the project itself.
+  # The pyrefly version and settings are defined in pyproject.toml
+  - repo: local
+    hooks:
+      - id: pyrefly-check
+        name: Pyrefly
+        pass_filenames: false # whether to check changed files, false: checks full repo
+        language: system
+        entry: pyrefly-check  # located in scripts dir
+
+  # Bash/shell autoformatter
+  # TODO: shfmt is too slow when applied to all files in the repo, find other solution
+
+  # Bash/shell linter
+  # TODO: seems to attempt to check Dockerfile, even though it does not have .sh extension
+  # - repo: https://github.com/koalaman/shellcheck-precommit
+  #   rev: v0.11.0
+  #   hooks:
+  #     - id: shellcheck
+  #       files: \.sh$
