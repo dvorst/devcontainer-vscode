@@ -170,11 +170,17 @@ fix_locale() {
 	locale-gen
 }
 
-install_pipx_packages() {
-	echo "# install_pipx_packages()"
-	local packages=$1
-	# shellcheck disable=SC2086
-	pipx install --global $packages
+install_pipx_package() {
+	echo "# install_pipx_package()"
+	local package=$1
+	pipx install --global "$package"
+}
+
+pipx_inject_package() {
+	echo "# pipx_inject_package()"
+	local package=$1
+	local dependency=$2
+	pipx inject --global "$package" "$dependency"
 }
 
 verify_version_is_latest() {
@@ -511,9 +517,8 @@ cleanup() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 
 main() {
-	
-	echo "-----------------------------------------------------------------------------------------"
-	echo "setup.sh start"
+	echo "—————————————————————————————————————————————————————————————————————————————————————————"
+	echo "——————————————————————————————————————— setup.sh ————————————————————————————————————————"
 	echo "# main()"
 
 	pam_fix
@@ -539,8 +544,11 @@ main() {
 		apt-package)
 			install_apt_package "$param1"
 			;;
+		pipx-inject-package)
+			pipx_inject_package "$param1" "$param2"
+			;;
 		pipx-package)
-			install_pipx_packages "$param1"
+			install_pipx_package "$param1"
 			;;
 		install)
 			install_custom "$param1" "$param2"
@@ -554,8 +562,8 @@ main() {
 
 	cleanup
 
-	echo "setup.sh done"
-	echo "-----------------------------------------------------------------------------------------"
+	echo "——————————————————————————————————————— setup.sh ————————————————————————————————————————"
+	echo "—————————————————————————————————————————————————————————————————————————————————————————"
 }
 
 main "$@"
