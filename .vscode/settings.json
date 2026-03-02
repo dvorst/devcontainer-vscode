@@ -1,0 +1,30 @@
+{
+    // set python interpreter path
+    // "python.defaultInterpreterPath": "/workspaces/infra/product/.venv/bin/python",
+    //
+    // Don't exclude the default files, show everything that is located in the folder
+    "files.exclude": {
+        "**/.git": false,
+        "**/.hg": false,
+        "**/.svn": false
+    },
+    //
+    // 
+    "shellcheck.customArgs": [
+        "--external-sources"  // Follow source statement even when file is not specified as input.
+    ],
+    "editor.rulers": [
+        100 // should be the same as: pyproject.toml > tool.ruff > line-length
+    ]
+    // "editor.formatOnSave": true,
+    // "editor.codeActionsOnSave": {
+    //   "source.fixAll.ruff": "explicit",
+    //   "source.organizeImports.ruff": "explicit"
+    // },
+    // "terminal.integrated.scrollback": 10000,
+    // "ruff.lint.ignore": [
+    //   "F401" // remove unused imports, which is annoying when formatOnSave is enabled
+    // ],
+    // "terminal.integrated.env.linux": {
+    // },
+}
