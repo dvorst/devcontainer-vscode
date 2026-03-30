@@ -1,0 +1,9 @@
+# Only load these settings for interactive shells, not for script/batch shells
+#   this prevents ble.sh being loaded when bash-scripts are run, which would provide no additional
+#   benefit and would only result in computational overhead.
+case $- in
+  *i*) ;;
+    *) return;;
+esac
+
+source -- /usr/local/share/blesh/ble.sh

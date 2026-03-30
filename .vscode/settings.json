@@ -1,0 +1,16 @@
+{
+  "python.defaultInterpreterPath": "/home/${env:USER}/venv/bin/python",
+  "files.exclude": {
+    "**/.git": false,
+    "**/.hg": false,
+    "**/.svn": false
+  },
+  "editor.rulers": [
+    100 // ensure this alligns with tool.ruff.line-length in pyproject.toml
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.ruff": "explicit",
+    "source.organizeImports.ruff": "explicit"
+  },
+}

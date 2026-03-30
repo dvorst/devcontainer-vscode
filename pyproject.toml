@@ -1,0 +1,24 @@
+[project]
+name = "project-name"
+version = "0.0.1"
+description = "project description"
+readme = "README.md"
+requires-python = "~=3.13.0"
+dependencies = []
+
+[dependency-groups]
+dev = ["pre-commit>=4.2.0", "pytest>=8.4.2", "ruff>=0.11.13"]
+
+[tool.ruff]
+line-length = 100  # ensure this alligns with editor.rulers in .vscode/settings.json
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings  
+    "F",  # pyflakes
+    "I",  # isort (import sorting)
+    "UP", # pyupgrade
+]
+ignore = ["F401"] # remove unused imports
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
